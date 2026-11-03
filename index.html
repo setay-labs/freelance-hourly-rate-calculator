@@ -720,6 +720,57 @@
       border-top: 1px solid var(--card-border);
       text-align: right;
     }
+
+    /* Portfolio Cross-Linking Bar */
+    .portfolio-bar {
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 16px 20px;
+      margin-top: 24px;
+      text-align: center;
+    }
+
+    .portfolio-bar h3 {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    .portfolio-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .portfolio-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      background-color: var(--card-subtle);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      color: var(--text-main);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: border-color 0.15s ease, background-color 0.15s ease;
+    }
+
+    .portfolio-pill:hover {
+      border-color: var(--card-border-focus);
+      background-color: #263449;
+    }
+
+    .portfolio-pill.current {
+      border-color: var(--accent-cyan);
+      background-color: rgba(2, 132, 199, 0.15);
+      color: #7dd3fc;
+    }
   </style>
 </head>
 <body>
@@ -980,6 +1031,9 @@
           <button type="button" class="btn btn-primary" id="copyRateSheetBtn">
             📋 Copy Complete Client Rate Sheet
           </button>
+          <button type="button" class="btn btn-secondary" id="shareLinkBtn">
+            🔗 Copy Shareable Calculation Link
+          </button>
           <div class="action-row">
             <button type="button" class="btn btn-secondary" id="recalcBtn">Recalculate</button>
             <button type="button" class="btn btn-secondary" id="resetDefaultsBtn">Reset Defaults</button>
@@ -996,6 +1050,16 @@
     <span>Advertisement &bull; Bottom Display Unit</span>
   </div>
 
+  <!-- Portfolio Cross-Linking Bar -->
+  <nav class="portfolio-bar" aria-label="Setay Labs Utility Network">
+    <h3>More Free Calculators &amp; Utilities by Setay Labs</h3>
+    <div class="portfolio-links">
+      <a href="https://setay-labs.github.io/" class="portfolio-pill">🧭 Setay Labs Tool Hub</a>
+      <a href="https://setay-labs.github.io/solar-battery-calculator/" class="portfolio-pill">⚡ Solar &amp; Battery Bank Calculator</a>
+      <a href="https://setay-labs.github.io/freelance-hourly-rate-calculator/" class="portfolio-pill current" aria-current="page">💼 Freelance Hourly &amp; 1099 Rate Calculator</a>
+    </div>
+  </nav>
+
   <!-- Footer with AdSense & Legal Compliance Triggers -->
   <footer class="site-footer">
     <div class="footer-links">
@@ -1003,7 +1067,7 @@
       <button type="button" id="openTermsBtn">Terms &amp; Financial Disclaimer</button>
       <button type="button" id="openAdDisclosureBtn">Advertising Disclosure</button>
     </div>
-    <p>&copy; 2026 Setay Labs Utility. 100% Client-Side Browser Calculation &bull; Zero Data Stored.</p>
+    <p>&copy; 2026 <a href="https://setay-labs.github.io/" style="color: #38bdf8; text-decoration: none;">Setay Labs</a> Utility. 100% Client-Side Browser Calculation &bull; Zero Data Stored.</p>
   </footer>
 </div>
 
@@ -1077,9 +1141,44 @@
     var rowProfitBuffer = document.getElementById("rowProfitBuffer");
 
     var copyRateSheetBtn = document.getElementById("copyRateSheetBtn");
+    var shareLinkBtn = document.getElementById("shareLinkBtn");
     var recalcBtn = document.getElementById("recalcBtn");
     var resetDefaultsBtn = document.getElementById("resetDefaultsBtn");
     var copyToast = document.getElementById("copyToast");
+
+    function loadStateFromUrl() {
+      try {
+        var params = new URLSearchParams(window.location.search);
+        if (params.has("net")) targetNetIncome.value = params.get("net");
+        if (params.has("tax")) taxRate.value = params.get("tax");
+        if (params.has("hlth")) monthlyHealth.value = params.get("hlth");
+        if (params.has("ret")) retirementMatch.value = params.get("ret");
+        if (params.has("mgn")) profitMargin.value = params.get("mgn");
+        if (params.has("cur")) currencySymbol.value = params.get("cur");
+        if (params.has("pto")) daysOff.value = params.get("pto");
+        if (params.has("hrs")) hoursPerWeek.value = params.get("hrs");
+        if (params.has("util")) utilizationPct.value = params.get("util");
+        if (params.has("exp")) {
+          var rawExp = params.get("exp").split(";");
+          var parsedExp = [];
+          rawExp.forEach(function(entry) {
+            var p = entry.split("|");
+            if (p.length === 3 && p[0]) {
+              parsedExp.push({
+                name: p[0],
+                amount: safeNum(p[1], 0),
+                cycle: p[2] === "annual" ? "annual" : "monthly"
+              });
+            }
+          });
+          if (parsedExp.length > 0) {
+            expenses = parsedExp;
+          }
+        }
+      } catch (e) {
+        // Ignore malformed URL params
+      }
+    }
 
     // Defensive Helpers
     function safeNum(val, fallback) {
@@ -1334,9 +1433,54 @@
       daysOff.value = "25";
       hoursPerWeek.value = "40";
       utilizationPct.value = "65";
+      if (window.history && window.history.replaceState) {
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
       renderExpenseTable();
       showToast("Reset to default parameters.");
     });
+
+    // Shareable Calculation URL Action
+    if (shareLinkBtn) {
+      shareLinkBtn.addEventListener("click", function() {
+        var params = new URLSearchParams();
+        params.set("net", targetNetIncome.value);
+        params.set("tax", taxRate.value);
+        params.set("hlth", monthlyHealth.value);
+        params.set("ret", retirementMatch.value);
+        params.set("mgn", profitMargin.value);
+        params.set("cur", currencySymbol.value);
+        params.set("pto", daysOff.value);
+        params.set("hrs", hoursPerWeek.value);
+        params.set("util", utilizationPct.value);
+
+        var encodedExp = expenses.map(function(item) {
+          return String(item.name || "Expense").replace(/[|;]/g, " ") + "|" + safeNum(item.amount, 0) + "|" + (item.cycle === "annual" ? "annual" : "monthly");
+        }).join(";");
+        if (encodedExp) {
+          params.set("exp", encodedExp);
+        }
+
+        var baseUrl = window.location.protocol === "file:"
+          ? "https://setay-labs.github.io/freelance-hourly-rate-calculator/"
+          : (window.location.origin + window.location.pathname);
+        var shareUrl = baseUrl + "?" + params.toString();
+
+        if (window.history && window.history.replaceState && window.location.protocol !== "file:") {
+          window.history.replaceState({}, document.title, "?" + params.toString());
+        }
+
+        if (navigator.clipboard && window.isSecureContext) {
+          navigator.clipboard.writeText(shareUrl).then(function() {
+            showToast("🔗 Shareable calculation link copied!");
+          }).catch(function() {
+            fallbackCopyText(shareUrl);
+          });
+        } else {
+          fallbackCopyText(shareUrl);
+        }
+      });
+    }
 
     // Copy Complete Client Rate Sheet
     copyRateSheetBtn.addEventListener("click", function() {
@@ -1483,6 +1627,7 @@
     });
 
     // Initial Render
+    loadStateFromUrl();
     renderExpenseTable();
   })();
 </script>
