@@ -1,0 +1,1491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="google-site-verification" content="3jApqZOtScn9SAin-lsRWq71JZSx7ffdME8_0mI-U0U" />
+  <meta name="description" content="Calculate your true freelance hourly rate, day rate, and 1099 vs. W-2 salary equivalence factoring in billable utilization, taxes, health insurance, PTO, and business overhead.">
+  <meta name="keywords" content="freelance hourly rate calculator, billable rate calculator salary, 1099 to w2 hourly rate calculator, consultant day rate calculator, how to calculate freelance rate">
+  <meta name="author" content="Setay Labs">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://setay-labs.github.io/freelance-hourly-rate-calculator/">
+  <title>Freelance True Hourly & Day Rate Calculator (1099 vs. W-2)</title>
+
+  <!-- Open Graph / Social Media Meta -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://setay-labs.github.io/freelance-hourly-rate-calculator/">
+  <meta property="og:title" content="Freelance True Hourly & Day Rate Calculator (1099 vs. W-2)">
+  <meta property="og:description" content="Convert your target annual take-home or W-2 salary into an exact billable hourly, daily, and monthly retainer rate.">
+  <meta property="og:site_name" content="Setay Labs Utility">
+
+  <!-- Twitter Cards -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Freelance True Hourly & Day Rate Calculator (1099 vs. W-2)">
+  <meta name="twitter:description" content="Convert your target annual take-home or W-2 salary into an exact billable hourly, daily, and monthly retainer rate.">
+
+  <!-- Schema.org WebApplication JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Freelance True Hourly & Day Rate Calculator",
+    "url": "https://setay-labs.github.io/freelance-hourly-rate-calculator/",
+    "applicationCategory": "FinanceApplication",
+    "operatingSystem": "All",
+    "browserRequirements": "Requires JavaScript. Requires HTML5.",
+    "description": "Calculate your true freelance hourly rate, full-day rate, retainer pricing, and 1099 vs. W-2 equivalence based on billable utilization, self-employment taxes, PTO, and overhead.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "featureList": [
+      "Target take-home salary to billable hourly rate conversion",
+      "Billable utilization and non-billable admin hours modeling",
+      "1099 vs. W-2 break-even hourly rate comparison",
+      "Dynamic business overhead and software expense tracker",
+      "Full-day (8h), half-day (4h), weekly, and monthly retainer tiers",
+      "One-click copyable client rate card and financial breakdown"
+    ]
+  }
+  </script>
+
+  <!-- Schema.org FAQPage JSON-LD for Search Snippets -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How do you calculate your true freelance hourly rate from a salary?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "To calculate a true freelance hourly rate: (1) Start with your target net annual income plus retirement contributions and divide by (1 - effective tax rate) to find pre-tax income needed. (2) Add annual health insurance and business overhead expenses. (3) Apply a profit/risk margin (typically 10% to 20%). (4) Divide total required gross revenue by your realistic annual billable hours (typically 1,000 to 1,450 hours per year after accounting for PTO and non-billable admin time)."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why is a 1099 contractor hourly rate higher than a W-2 hourly wage?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "A W-2 employee is paid for 2,080 hours per year including paid vacation, holidays, and non-billable meetings, while the employer pays half of FICA taxes (7.65%), health insurance subsidies, 401(k) matching, and software overhead. A 1099 contractor must cover the full 15.3% self-employment tax, unpaid PTO, benefits, and overhead across roughly 1,100 to 1,400 billable hours, usually requiring a 1.4x to 1.8x multiplier over an equivalent W-2 hourly wage."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is a realistic billable utilization rate for freelancers?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Most solo freelancers and independent consultants achieve a 60% to 70% billable utilization rate (roughly 24 to 28 billable hours out of a 40-hour workweek). The remaining 30% to 40% is spent on non-billable business tasks such as client proposals, invoicing, bookkeeping, marketing, and continuing education."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    :root {
+      --bg: #0b1120;
+      --card-bg: #151f32;
+      --card-subtle: #1e293b;
+      --card-border: #334155;
+      --card-border-focus: #38bdf8;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent-emerald: #10b981;
+      --accent-emerald-glow: rgba(16, 185, 129, 0.15);
+      --accent-amber: #f59e0b;
+      --accent-amber-glow: rgba(245, 158, 11, 0.15);
+      --accent-cyan: #0284c7;
+      --btn-primary: #0284c7;
+      --btn-primary-hover: #0369a1;
+      --btn-danger: #ef4444;
+      --btn-danger-hover: #dc2626;
+      --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text-main);
+      font-family: var(--font-family);
+      line-height: 1.5;
+      padding: 16px;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      margin-bottom: 24px;
+      padding: 12px 8px;
+    }
+
+    header h1 {
+      font-size: 1.85rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    header p {
+      color: var(--text-muted);
+      font-size: 1rem;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    /* AdSense Containers */
+    .ad-container {
+      background-color: var(--card-subtle);
+      border: 1px dashed var(--card-border);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin: 0 auto 24px auto;
+      overflow: hidden;
+    }
+
+    .ad-top {
+      min-height: 90px;
+      max-width: 970px;
+    }
+
+    .ad-bottom {
+      min-height: 250px;
+      max-width: 970px;
+      margin-top: 28px;
+      margin-bottom: 16px;
+    }
+
+    /* Main Grid Layout */
+    .workspace-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    @media (min-width: 940px) {
+      .workspace-grid {
+        grid-template-columns: 1.25fr 0.95fr;
+      }
+      .results-column {
+        position: sticky;
+        top: 16px;
+      }
+    }
+
+    /* Cards */
+    .card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--card-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #ffffff;
+    }
+
+    .card-title span.badge {
+      font-size: 0.75rem;
+      font-weight: 500;
+      background-color: var(--card-subtle);
+      color: var(--text-muted);
+      padding: 3px 8px;
+      border-radius: 6px;
+      border: 1px solid var(--card-border);
+    }
+
+    /* Inputs & Controls */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    @media (min-width: 560px) {
+      .form-grid-2 {
+        grid-template-columns: 1fr 1fr;
+      }
+      .form-grid-3 {
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    label {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #e2e8f0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    label span.hint {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+
+    input[type="number"],
+    input[type="text"],
+    select {
+      width: 100%;
+      min-height: 44px;
+      padding: 8px 12px;
+      background-color: var(--bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      color: var(--text-main);
+      font-size: 0.95rem;
+      font-family: inherit;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    input[type="number"]:focus,
+    input[type="text"]:focus,
+    select:focus {
+      outline: none;
+      border-color: var(--card-border-focus);
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
+    }
+
+    /* Preset Bar */
+    .preset-bar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .preset-bar select {
+      flex: 1 1 220px;
+    }
+
+    /* Expense Table */
+    .table-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      margin-bottom: 12px;
+    }
+
+    table.expense-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 480px;
+    }
+
+    table.expense-table th {
+      text-align: left;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-muted);
+      padding: 8px 6px;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    table.expense-table td {
+      padding: 8px 6px;
+      border-bottom: 1px solid rgba(51, 65, 85, 0.5);
+      vertical-align: middle;
+    }
+
+    table.expense-table input[type="text"] {
+      min-width: 140px;
+    }
+
+    table.expense-table input[type="number"] {
+      min-width: 90px;
+    }
+
+    table.expense-table select {
+      min-width: 105px;
+    }
+
+    .row-annual {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--accent-amber);
+      white-space: nowrap;
+      padding-left: 4px;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      min-height: 44px;
+      padding: 8px 16px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: background-color 0.15s ease, transform 0.1s ease;
+      font-family: inherit;
+      white-space: nowrap;
+    }
+
+    .btn:active {
+      transform: translateY(1px);
+    }
+
+    .btn-primary {
+      background-color: var(--btn-primary);
+      color: #ffffff;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--btn-primary-hover);
+    }
+
+    .btn-secondary {
+      background-color: var(--card-subtle);
+      color: var(--text-main);
+      border-color: var(--card-border);
+    }
+
+    .btn-secondary:hover {
+      background-color: #283548;
+    }
+
+    .btn-icon-danger {
+      background-color: transparent;
+      color: var(--text-muted);
+      border: 1px solid var(--card-border);
+      min-width: 44px;
+      min-height: 44px;
+      padding: 0;
+      border-radius: 8px;
+    }
+
+    .btn-icon-danger:hover {
+      background-color: rgba(239, 68, 68, 0.15);
+      color: var(--btn-danger);
+      border-color: var(--btn-danger);
+    }
+
+    .table-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 8px;
+    }
+
+    /* Output Cards */
+    .hero-stats {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    @media (min-width: 480px) {
+      .hero-stats {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .stat-box {
+      border-radius: 10px;
+      padding: 16px;
+      border: 1px solid var(--card-border);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .stat-box.hourly {
+      background: linear-gradient(145deg, rgba(16, 185, 129, 0.12), rgba(21, 31, 50, 0.9));
+      border-color: rgba(16, 185, 129, 0.45);
+    }
+
+    .stat-box.dayrate {
+      background: linear-gradient(145deg, rgba(245, 158, 11, 0.12), rgba(21, 31, 50, 0.9));
+      border-color: rgba(245, 158, 11, 0.45);
+    }
+
+    .stat-label {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .stat-value {
+      font-size: 1.95rem;
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+    }
+
+    .stat-box.hourly .stat-value {
+      color: var(--accent-emerald);
+    }
+
+    .stat-box.dayrate .stat-value {
+      color: var(--accent-amber);
+    }
+
+    .stat-sub {
+      font-size: 0.85rem;
+      color: #cbd5e1;
+      margin-top: 6px;
+      font-weight: 500;
+    }
+
+    /* Breakdown List */
+    .summary-list {
+      list-style: none;
+      margin-bottom: 18px;
+      background-color: var(--bg);
+      border-radius: 8px;
+      padding: 12px 14px;
+      border: 1px solid var(--card-border);
+    }
+
+    .summary-list li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 7px 0;
+      font-size: 0.88rem;
+      border-bottom: 1px solid rgba(51, 65, 85, 0.45);
+    }
+
+    .summary-list li:last-child {
+      border-bottom: none;
+    }
+
+    .summary-list span.label {
+      color: var(--text-muted);
+    }
+
+    .summary-list span.val {
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    /* Retainer Tiers Block */
+    .procurement-box {
+      background-color: var(--card-subtle);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 14px;
+      margin-bottom: 18px;
+    }
+
+    .procurement-title {
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #cbd5e1;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .procurement-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      font-size: 0.85rem;
+    }
+
+    .proc-item {
+      background-color: var(--bg);
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid rgba(51, 65, 85, 0.6);
+    }
+
+    .proc-item strong {
+      display: block;
+      color: #ffffff;
+      font-size: 1rem;
+      margin-bottom: 2px;
+    }
+
+    .proc-item span {
+      color: var(--text-muted);
+      font-size: 0.78rem;
+    }
+
+    /* Action Buttons Group */
+    .action-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .action-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .action-row .btn {
+      flex: 1;
+    }
+
+    .toast-feedback {
+      font-size: 0.82rem;
+      color: var(--accent-emerald);
+      text-align: center;
+      min-height: 20px;
+      font-weight: 500;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .toast-feedback.show {
+      opacity: 1;
+    }
+
+    /* Formula & FAQ Notes */
+    details.formula-notes {
+      margin-top: 16px;
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 14px 18px;
+    }
+
+    details.formula-notes summary {
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      user-select: none;
+    }
+
+    details.formula-notes summary:hover {
+      color: var(--text-main);
+    }
+
+    .formula-content {
+      margin-top: 12px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      display: grid;
+      gap: 8px;
+      padding-top: 10px;
+      border-top: 1px solid var(--card-border);
+    }
+
+    .formula-content code {
+      background-color: var(--bg);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: #e2e8f0;
+      font-family: monospace;
+    }
+
+    /* Footer & Compliance Links */
+    .site-footer {
+      margin-top: 32px;
+      padding: 20px 12px;
+      border-top: 1px solid var(--card-border);
+      text-align: center;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 18px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+
+    .footer-links button {
+      background: none;
+      border: none;
+      color: #38bdf8;
+      cursor: pointer;
+      font-size: 0.82rem;
+      text-decoration: underline;
+      font-family: inherit;
+      padding: 4px;
+    }
+
+    .footer-links button:hover {
+      color: #7dd3fc;
+    }
+
+    /* Accessible Compliance Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background-color: rgba(11, 17, 32, 0.85);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 1000;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      max-width: 640px;
+      width: 100%;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--card-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-header h3 {
+      font-size: 1.05rem;
+      color: #ffffff;
+    }
+
+    .modal-body {
+      padding: 20px;
+      overflow-y: auto;
+      font-size: 0.88rem;
+      color: #cbd5e1;
+      display: grid;
+      gap: 12px;
+    }
+
+    .modal-body h4 {
+      color: #ffffff;
+      font-size: 0.95rem;
+      margin-top: 4px;
+    }
+
+    .modal-footer {
+      padding: 12px 20px;
+      border-top: 1px solid var(--card-border);
+      text-align: right;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- 1. Header -->
+  <header>
+    <h1>
+      <span>💼 Freelance True Hourly &amp; Day Rate Calculator 💼</span>
+    </h1>
+    <p>Convert your target annual take-home or W-2 salary into an exact 1099 billable hourly, daily, and retainer rate based on real utilization, taxes, and overhead.</p>
+  </header>
+
+  <!-- 2. Top Ad Container -->
+  <div class="ad-container ad-top" aria-label="Advertisement">
+    <!-- AdSense Placeholder: Top Leaderboard (728x90 / Responsive) -->
+    <span>Advertisement &bull; Top Leaderboard</span>
+  </div>
+
+  <!-- 3. Input Controls & 4. Output Card -->
+  <main class="workspace-grid">
+    <!-- Left Column: Inputs -->
+    <div class="inputs-column">
+      <!-- Card 1: Income, Taxes & Benefits -->
+      <section class="card" aria-labelledby="income-heading">
+        <div class="card-title" id="income-heading">
+          <span>1. Target Income, Taxes &amp; Benefits</span>
+          <span class="badge">1099 vs. W-2</span>
+        </div>
+
+        <div class="form-grid form-grid-2">
+          <div class="form-group">
+            <label for="targetNetIncome">
+              Target Annual Take-Home / Base W-2 ($)
+              <span class="hint">Net Goal</span>
+            </label>
+            <input type="number" id="targetNetIncome" value="100000" min="1000" max="2000000" step="1000" aria-label="Target annual take-home pay or equivalent W-2 salary in dollars">
+          </div>
+
+          <div class="form-group">
+            <label for="taxRate">
+              Estimated Effective Tax Rate (%)
+              <span class="hint">15.3% SE + Income</span>
+            </label>
+            <input type="number" id="taxRate" value="30" min="0" max="65" step="0.5" aria-label="Estimated combined self-employment and income tax rate percentage">
+          </div>
+
+          <div class="form-group">
+            <label for="monthlyHealth">
+              Health, Dental &amp; Vision Insurance ($/mo)
+              <span class="hint">Self-Paid</span>
+            </label>
+            <input type="number" id="monthlyHealth" value="550" min="0" max="10000" step="25" aria-label="Monthly health, dental, and vision insurance premium in dollars">
+          </div>
+
+          <div class="form-group">
+            <label for="retirementMatch">
+              Target Retirement / Lost 401(k) Match (%)
+              <span class="hint">Default: 4%</span>
+            </label>
+            <input type="number" id="retirementMatch" value="4" min="0" max="30" step="0.5" aria-label="Annual retirement savings or lost employer 401k match percentage">
+          </div>
+
+          <div class="form-group">
+            <label for="profitMargin">
+              Business Profit &amp; Risk Buffer (%)
+              <span class="hint">10%–20% std</span>
+            </label>
+            <input type="number" id="profitMargin" value="15" min="0" max="100" step="1" aria-label="Business profit and risk margin percentage">
+          </div>
+
+          <div class="form-group">
+            <label for="currencySymbol">
+              Currency Display
+              <span class="hint">Symbol</span>
+            </label>
+            <select id="currencySymbol" aria-label="Select currency symbol">
+              <option value="$" selected>USD / CAD / AUD ($)</option>
+              <option value="£">GBP (£)</option>
+              <option value="€">EUR (€)</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <!-- Card 2: Time & Billable Utilization -->
+      <section class="card" aria-labelledby="utilization-heading">
+        <div class="card-title" id="utilization-heading">
+          <span>2. Working Schedule &amp; Billable Utilization</span>
+          <span class="badge" id="billableHoursBadge">1,222 Billable Hrs/Yr</span>
+        </div>
+
+        <div class="form-grid form-grid-3">
+          <div class="form-group">
+            <label for="daysOff">
+              PTO, Holidays &amp; Sick Days
+              <span class="hint">Days/Yr</span>
+            </label>
+            <input type="number" id="daysOff" value="25" min="0" max="200" step="1" aria-label="Total unpaid vacation, holiday, and sick days per year">
+          </div>
+
+          <div class="form-group">
+            <label for="hoursPerWeek">
+              Total Workweek Hours
+              <span class="hint">Hrs/Wk</span>
+            </label>
+            <input type="number" id="hoursPerWeek" value="40" min="5" max="80" step="1" aria-label="Total working hours per week">
+          </div>
+
+          <div class="form-group">
+            <label for="utilizationPct">
+              Billable Utilization (%)
+              <span class="hint">60–70% typical</span>
+            </label>
+            <input type="number" id="utilizationPct" value="65" min="10" max="100" step="1" aria-label="Percentage of weekly working hours billed directly to clients">
+          </div>
+        </div>
+      </section>
+
+      <!-- Card 3: Business Overhead & Expenses -->
+      <section class="card" aria-labelledby="expenses-heading">
+        <div class="card-title" id="expenses-heading">
+          <span>3. Business Overhead &amp; Deductible Expenses</span>
+          <span class="badge" id="overheadBadge">$5,520 / Yr</span>
+        </div>
+
+        <div class="preset-bar">
+          <select id="expensePresetSelect" aria-label="Quick add common freelance business expense">
+            <option value="">+ Quick-Add Common Overhead Expense...</option>
+            <option value="Software &amp; SaaS Subscriptions|150|monthly">Software &amp; SaaS Subscriptions ($150/mo)</option>
+            <option value="CPA, Tax Prep &amp; Bookkeeping|120|monthly">CPA, Tax Prep &amp; Bookkeeping ($120/mo)</option>
+            <option value="General Liability / E&amp;O Insurance|65|monthly">General Liability / E&amp;O Insurance ($65/mo)</option>
+            <option value="Laptop &amp; Hardware Refresh Fund|1200|annual">Laptop &amp; Hardware Refresh Fund ($1,200/yr)</option>
+            <option value="High-Speed Internet &amp; Phone|125|monthly">High-Speed Internet &amp; Phone ($125/mo)</option>
+            <option value="Co-Working Desk / Office Space|250|monthly">Co-Working Desk / Office Space ($250/mo)</option>
+            <option value="Web Hosting, Domains &amp; Marketing|600|annual">Web Hosting, Domains &amp; Marketing ($600/yr)</option>
+            <option value="Courses, Certs &amp; Conferences|800|annual">Courses, Certs &amp; Conferences ($800/yr)</option>
+          </select>
+          <button type="button" class="btn btn-secondary" id="addExpensePresetBtn">Add Preset</button>
+        </div>
+
+        <div class="table-wrapper">
+          <table class="expense-table" aria-label="Business overhead expenses">
+            <thead>
+              <tr>
+                <th style="width: 40%;">Expense Category</th>
+                <th style="width: 22%;">Amount</th>
+                <th style="width: 20%;">Frequency</th>
+                <th style="width: 12%;">Annual</th>
+                <th style="width: 6%;"><span class="sr-only">Remove</span></th>
+              </tr>
+            </thead>
+            <tbody id="expenseTbody">
+              <!-- Populated by Vanilla JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <div class="table-actions">
+          <button type="button" class="btn btn-secondary" id="addCustomExpenseBtn">+ Add Custom Expense</button>
+          <button type="button" class="btn btn-secondary" id="clearExpensesBtn">Clear All</button>
+        </div>
+      </section>
+
+      <!-- Collapsible Engineering & Financial Formula Notes -->
+      <details class="formula-notes">
+        <summary>How Freelance Rate &amp; 1099 vs. W-2 Math Works (Formulas)</summary>
+        <div class="formula-content">
+          <p><strong>1. Billable Hours / Year:</strong> <code>((260 Weekdays - Days Off) &divide; 5) &times; Workweek Hours &times; (Utilization % &divide; 100)</code></p>
+          <p><strong>2. Pre-Tax Income Target:</strong> <code>(Target Take-Home + Retirement Savings) &divide; (1 - Effective Tax Rate)</code></p>
+          <p><strong>3. Break-Even Gross Revenue:</strong> <code>Pre-Tax Income Target + Annual Health Insurance + Annual Business Overhead</code></p>
+          <p><strong>4. Total Target Gross Revenue:</strong> <code>Break-Even Gross Revenue &times; (1 + Profit Margin %)</code></p>
+          <p><strong>5. True Hourly Rate:</strong> <code>Total Target Gross Revenue &divide; Annual Billable Hours</code></p>
+        </div>
+      </details>
+    </div>
+
+    <!-- Right Column: Output Card & Actions -->
+    <div class="results-column">
+      <section class="card" aria-labelledby="results-heading" aria-live="polite">
+        <div class="card-title" id="results-heading">
+          <span>Recommended Client Billing Rates</span>
+          <span class="badge" id="multiplierBadge">1.68&times; W-2 Rate</span>
+        </div>
+
+        <!-- Hero Primary Outputs -->
+        <div class="hero-stats">
+          <div class="stat-box hourly">
+            <span class="stat-label">True Hourly Rate</span>
+            <div class="stat-value" id="statTrueHourly">$145 / hr</div>
+            <div class="stat-sub" id="statBreakEvenHourly">Break-Even Floor: $126 / hr</div>
+          </div>
+
+          <div class="stat-box dayrate">
+            <span class="stat-label">Full-Day Rate (8h)</span>
+            <div class="stat-value" id="statDayRate">$1,160 / day</div>
+            <div class="stat-sub" id="statHalfDayRate">Half-Day (4h): $580</div>
+          </div>
+        </div>
+
+        <!-- Retainer & Project Pricing Guide -->
+        <div class="procurement-box">
+          <div class="procurement-title">Retainer &amp; Equivalent W-2 Comparison</div>
+          <div class="procurement-grid">
+            <div class="proc-item">
+              <strong id="tierWeekly">$3,770 / wk</strong>
+              <span id="tierWeeklySub">Weekly Retainer (26 billable hrs)</span>
+            </div>
+            <div class="proc-item">
+              <strong id="tierMonthly">$14,765 / mo</strong>
+              <span>Monthly Client Retainer</span>
+            </div>
+            <div class="proc-item">
+              <strong id="tierW2Hourly">$48.08 / hr</strong>
+              <span>Equivalent W-2 Wage (2,080h)</span>
+            </div>
+            <div class="proc-item">
+              <strong id="tierGrossAnnual">$177,180 / yr</strong>
+              <span>Required Gross 1099 Billing</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Detailed Financial & Time Breakdown -->
+        <ul class="summary-list">
+          <li>
+            <span class="label">Working Weeks / Billable Days</span>
+            <span class="val" id="rowWorkingSchedule">47.0 wks (153 billable days)</span>
+          </li>
+          <li>
+            <span class="label">Billable vs. Admin Hours / Wk</span>
+            <span class="val" id="rowWeeklySplit">26.0 billable / 14.0 admin hrs</span>
+          </li>
+          <li>
+            <span class="label">Annual Billable Hours</span>
+            <span class="val" id="rowAnnualBillable">1,222 hrs / yr</span>
+          </li>
+          <li>
+            <span class="label">Estimated Annual Tax Reserve</span>
+            <span class="val" id="rowAnnualTaxes">$44,571 / yr</span>
+          </li>
+          <li>
+            <span class="label">Health Insurance + Retirement</span>
+            <span class="val" id="rowBenefitsCost">$10,600 / yr</span>
+          </li>
+          <li>
+            <span class="label">Annual Business Overhead</span>
+            <span class="val" id="rowOverheadCost">$5,520 / yr</span>
+          </li>
+          <li>
+            <span class="label">Annual Profit &amp; Risk Buffer</span>
+            <span class="val" id="rowProfitBuffer">$23,110 / yr</span>
+          </li>
+        </ul>
+
+        <!-- 5. Actions -->
+        <div class="action-group">
+          <button type="button" class="btn btn-primary" id="copyRateSheetBtn">
+            📋 Copy Complete Client Rate Sheet
+          </button>
+          <div class="action-row">
+            <button type="button" class="btn btn-secondary" id="recalcBtn">Recalculate</button>
+            <button type="button" class="btn btn-secondary" id="resetDefaultsBtn">Reset Defaults</button>
+          </div>
+          <div class="toast-feedback" id="copyToast" role="status" aria-live="polite"></div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- 6. Bottom Ad Container -->
+  <div class="ad-container ad-bottom" aria-label="Advertisement">
+    <!-- AdSense Placeholder: Bottom Rectangle (336x280 / Responsive) -->
+    <span>Advertisement &bull; Bottom Display Unit</span>
+  </div>
+
+  <!-- Footer with AdSense & Legal Compliance Triggers -->
+  <footer class="site-footer">
+    <div class="footer-links">
+      <button type="button" id="openPrivacyBtn">Privacy &amp; Cookie Policy</button>
+      <button type="button" id="openTermsBtn">Terms &amp; Financial Disclaimer</button>
+      <button type="button" id="openAdDisclosureBtn">Advertising Disclosure</button>
+    </div>
+    <p>&copy; 2026 Setay Labs Utility. 100% Client-Side Browser Calculation &bull; Zero Data Stored.</p>
+  </footer>
+</div>
+
+<!-- Compliance Modal -->
+<div class="modal-overlay" id="policyModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" tabindex="-1">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3 id="modalTitle">Policy Information</h3>
+      <button type="button" class="btn btn-secondary" id="closeModalBtn" aria-label="Close modal">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-primary" id="modalCloseActionBtn">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    "use strict";
+
+    // Default Overhead Expenses
+    var initialExpenses = [
+      { name: "Software & SaaS Subscriptions", amount: 150, cycle: "monthly" },
+      { name: "CPA, Tax Prep & Bookkeeping", amount: 120, cycle: "monthly" },
+      { name: "General Liability / E&O Insurance", amount: 65, cycle: "monthly" },
+      { name: "High-Speed Internet & Phone", amount: 125, cycle: "monthly" }
+    ];
+
+    var expenses = JSON.parse(JSON.stringify(initialExpenses));
+
+    // DOM Elements
+    var targetNetIncome = document.getElementById("targetNetIncome");
+    var taxRate = document.getElementById("taxRate");
+    var monthlyHealth = document.getElementById("monthlyHealth");
+    var retirementMatch = document.getElementById("retirementMatch");
+    var profitMargin = document.getElementById("profitMargin");
+    var currencySymbol = document.getElementById("currencySymbol");
+
+    var daysOff = document.getElementById("daysOff");
+    var hoursPerWeek = document.getElementById("hoursPerWeek");
+    var utilizationPct = document.getElementById("utilizationPct");
+
+    var expensePresetSelect = document.getElementById("expensePresetSelect");
+    var addExpensePresetBtn = document.getElementById("addExpensePresetBtn");
+    var expenseTbody = document.getElementById("expenseTbody");
+    var addCustomExpenseBtn = document.getElementById("addCustomExpenseBtn");
+    var clearExpensesBtn = document.getElementById("clearExpensesBtn");
+
+    var billableHoursBadge = document.getElementById("billableHoursBadge");
+    var overheadBadge = document.getElementById("overheadBadge");
+    var multiplierBadge = document.getElementById("multiplierBadge");
+
+    var statTrueHourly = document.getElementById("statTrueHourly");
+    var statBreakEvenHourly = document.getElementById("statBreakEvenHourly");
+    var statDayRate = document.getElementById("statDayRate");
+    var statHalfDayRate = document.getElementById("statHalfDayRate");
+
+    var tierWeekly = document.getElementById("tierWeekly");
+    var tierWeeklySub = document.getElementById("tierWeeklySub");
+    var tierMonthly = document.getElementById("tierMonthly");
+    var tierW2Hourly = document.getElementById("tierW2Hourly");
+    var tierGrossAnnual = document.getElementById("tierGrossAnnual");
+
+    var rowWorkingSchedule = document.getElementById("rowWorkingSchedule");
+    var rowWeeklySplit = document.getElementById("rowWeeklySplit");
+    var rowAnnualBillable = document.getElementById("rowAnnualBillable");
+    var rowAnnualTaxes = document.getElementById("rowAnnualTaxes");
+    var rowBenefitsCost = document.getElementById("rowBenefitsCost");
+    var rowOverheadCost = document.getElementById("rowOverheadCost");
+    var rowProfitBuffer = document.getElementById("rowProfitBuffer");
+
+    var copyRateSheetBtn = document.getElementById("copyRateSheetBtn");
+    var recalcBtn = document.getElementById("recalcBtn");
+    var resetDefaultsBtn = document.getElementById("resetDefaultsBtn");
+    var copyToast = document.getElementById("copyToast");
+
+    // Defensive Helpers
+    function safeNum(val, fallback) {
+      var n = parseFloat(val);
+      if (isNaN(n) || !isFinite(n) || n < 0) {
+        return fallback !== undefined ? fallback : 0;
+      }
+      return n;
+    }
+
+    function clamp(val, min, max) {
+      return Math.min(Math.max(val, min), max);
+    }
+
+    function formatMoney(amount, decimals) {
+      var sym = currencySymbol ? currencySymbol.value : "$";
+      var n = isFinite(amount) && !isNaN(amount) ? Math.max(0, amount) : 0;
+      var d = decimals !== undefined ? decimals : 0;
+      return sym + n.toLocaleString("en-US", {
+        minimumFractionDigits: d,
+        maximumFractionDigits: d
+      });
+    }
+
+    function escapeHtml(str) {
+      return String(str || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function renderExpenseTable() {
+      expenseTbody.innerHTML = "";
+      var sym = currencySymbol ? currencySymbol.value : "$";
+
+      if (expenses.length === 0) {
+        var emptyTr = document.createElement("tr");
+        emptyTr.innerHTML = '<td colspan="5" style="text-align:center; color: var(--text-muted); padding: 14px;">No overhead expenses listed. Add a preset or custom expense above.</td>';
+        expenseTbody.appendChild(emptyTr);
+        calculateRates();
+        return;
+      }
+
+      expenses.forEach(function(item, idx) {
+        var amt = safeNum(item.amount, 0);
+        var annual = item.cycle === "annual" ? amt : amt * 12;
+        var tr = document.createElement("tr");
+        tr.innerHTML =
+          '<td>' +
+            '<input type="text" class="exp-name" data-index="' + idx + '" value="' + escapeHtml(item.name) + '" aria-label="Expense name row ' + (idx + 1) + '">' +
+          '</td>' +
+          '<td>' +
+            '<input type="number" class="exp-amount" data-index="' + idx + '" value="' + amt + '" min="0" max="500000" step="5" aria-label="Expense cost row ' + (idx + 1) + '">' +
+          '</td>' +
+          '<td>' +
+            '<select class="exp-cycle" data-index="' + idx + '" aria-label="Billing frequency row ' + (idx + 1) + '">' +
+              '<option value="monthly"' + (item.cycle === "monthly" ? " selected" : "") + '>Monthly</option>' +
+              '<option value="annual"' + (item.cycle === "annual" ? " selected" : "") + '>Annual</option>' +
+            '</select>' +
+          '</td>' +
+          '<td class="row-annual" id="exp-annual-' + idx + '">' + sym + Math.round(annual).toLocaleString("en-US") + '/yr</td>' +
+          '<td>' +
+            '<button type="button" class="btn-icon-danger delete-exp-btn" data-index="' + idx + '" title="Remove expense" aria-label="Remove expense row ' + (idx + 1) + '">✕</button>' +
+          '</td>';
+        expenseTbody.appendChild(tr);
+      });
+
+      calculateRates();
+    }
+
+    function calculateRates() {
+      var netTarget = safeNum(targetNetIncome.value, 0);
+      var effTaxPct = clamp(safeNum(taxRate.value, 0), 0, 85);
+      var healthMo = safeNum(monthlyHealth.value, 0);
+      var retirePct = clamp(safeNum(retirementMatch.value, 0), 0, 100);
+      var marginPct = clamp(safeNum(profitMargin.value, 0), 0, 200);
+
+      var ptoDays = clamp(safeNum(daysOff.value, 0), 0, 255);
+      var wkHours = clamp(safeNum(hoursPerWeek.value, 40), 1, 112);
+      var utilPct = clamp(safeNum(utilizationPct.value, 65), 5, 100);
+
+      // 1. Working Schedule & Utilization Math
+      var workDaysPerYear = Math.max(5, 260 - ptoDays);
+      var workWeeksPerYear = workDaysPerYear / 5;
+      var billableHrsPerWeek = wkHours * (utilPct / 100);
+      var adminHrsPerWeek = Math.max(0, wkHours - billableHrsPerWeek);
+      var annualBillableHours = Math.max(1, workWeeksPerYear * billableHrsPerWeek);
+      var annualBillableDays = annualBillableHours / 8;
+
+      // 2. Annual Overhead Sum
+      var annualOverhead = 0;
+      var sym = currencySymbol ? currencySymbol.value : "$";
+      expenses.forEach(function(item, idx) {
+        var amt = safeNum(item.amount, 0);
+        var annual = item.cycle === "annual" ? amt : amt * 12;
+        annualOverhead += annual;
+        var rowCell = document.getElementById("exp-annual-" + idx);
+        if (rowCell) {
+          rowCell.textContent = sym + Math.round(annual).toLocaleString("en-US") + "/yr";
+        }
+      });
+
+      // 3. Benefits, Taxes & Gross Revenue Math
+      var annualHealth = healthMo * 12;
+      var annualRetirement = netTarget * (retirePct / 100);
+      var totalBenefits = annualHealth + annualRetirement;
+
+      var taxDivisor = Math.max(0.15, 1 - (effTaxPct / 100));
+      var preTaxIncomeNeeded = (netTarget + annualRetirement) / taxDivisor;
+      var estimatedTaxes = Math.max(0, preTaxIncomeNeeded - (netTarget + annualRetirement));
+
+      var breakEvenGross = preTaxIncomeNeeded + annualHealth + annualOverhead;
+      var profitBufferDollars = breakEvenGross * (marginPct / 100);
+      var totalTargetGross = breakEvenGross + profitBufferDollars;
+
+      // 4. Rate Calculations
+      var breakEvenHourly = breakEvenGross / annualBillableHours;
+      var trueHourly = totalTargetGross / annualBillableHours;
+      var fullDayRate = trueHourly * 8;
+      var halfDayRate = trueHourly * 4;
+      var weeklyRetainer = totalTargetGross / workWeeksPerYear;
+      var monthlyRetainer = totalTargetGross / 12;
+
+      // Equivalent W-2 Base Wage (standard 2,080 paid hours/year)
+      var w2Hourly = netTarget / 2080;
+      var multiplier = w2Hourly > 0 ? (trueHourly / w2Hourly) : 0;
+
+      // Update DOM Badges & Outputs
+      billableHoursBadge.textContent = Math.round(annualBillableHours).toLocaleString("en-US") + " Billable Hrs/Yr";
+      overheadBadge.textContent = formatMoney(Math.round(annualOverhead), 0) + " / Yr";
+      multiplierBadge.textContent = multiplier > 0 ? (multiplier.toFixed(2) + "× W-2 Wage") : "1099 Rate";
+
+      statTrueHourly.textContent = formatMoney(Math.ceil(trueHourly), 0) + " / hr";
+      statBreakEvenHourly.textContent = "Break-Even Floor: " + formatMoney(Math.ceil(breakEvenHourly), 0) + " / hr";
+      statDayRate.textContent = formatMoney(Math.ceil(fullDayRate / 5) * 5, 0) + " / day";
+      statHalfDayRate.textContent = "Half-Day (4h): " + formatMoney(Math.ceil(halfDayRate / 5) * 5, 0);
+
+      tierWeekly.textContent = formatMoney(Math.round(weeklyRetainer), 0) + " / wk";
+      tierWeeklySub.textContent = "Weekly Retainer (" + billableHrsPerWeek.toFixed(1) + " billable hrs)";
+      tierMonthly.textContent = formatMoney(Math.round(monthlyRetainer), 0) + " / mo";
+      tierW2Hourly.textContent = formatMoney(w2Hourly, 2) + " / hr";
+      tierGrossAnnual.textContent = formatMoney(Math.round(totalTargetGross), 0) + " / yr";
+
+      rowWorkingSchedule.textContent = workWeeksPerYear.toFixed(1) + " wks (" + Math.round(annualBillableDays) + " billable days)";
+      rowWeeklySplit.textContent = billableHrsPerWeek.toFixed(1) + " billable / " + adminHrsPerWeek.toFixed(1) + " admin hrs";
+      rowAnnualBillable.textContent = Math.round(annualBillableHours).toLocaleString("en-US") + " hrs / yr";
+      rowAnnualTaxes.textContent = formatMoney(Math.round(estimatedTaxes), 0) + " / yr";
+      rowBenefitsCost.textContent = formatMoney(Math.round(totalBenefits), 0) + " / yr";
+      rowOverheadCost.textContent = formatMoney(Math.round(annualOverhead), 0) + " / yr";
+      rowProfitBuffer.textContent = formatMoney(Math.round(profitBufferDollars), 0) + " / yr";
+    }
+
+    // Event Delegation for Expense Table
+    expenseTbody.addEventListener("input", function(e) {
+      var target = e.target;
+      var idx = parseInt(target.getAttribute("data-index"), 10);
+      if (isNaN(idx) || !expenses[idx]) return;
+
+      if (target.classList.contains("exp-name")) {
+        expenses[idx].name = target.value;
+      } else if (target.classList.contains("exp-amount")) {
+        expenses[idx].amount = safeNum(target.value, 0);
+        calculateRates();
+      }
+    });
+
+    expenseTbody.addEventListener("change", function(e) {
+      var target = e.target;
+      var idx = parseInt(target.getAttribute("data-index"), 10);
+      if (isNaN(idx) || !expenses[idx]) return;
+
+      if (target.classList.contains("exp-cycle")) {
+        expenses[idx].cycle = target.value;
+        calculateRates();
+      }
+    });
+
+    expenseTbody.addEventListener("click", function(e) {
+      var btn = e.target.closest(".delete-exp-btn");
+      if (!btn) return;
+      var idx = parseInt(btn.getAttribute("data-index"), 10);
+      if (!isNaN(idx) && expenses[idx]) {
+        expenses.splice(idx, 1);
+        renderExpenseTable();
+      }
+    });
+
+    // Add Expense Preset
+    addExpensePresetBtn.addEventListener("click", function() {
+      var val = expensePresetSelect.value;
+      if (!val) return;
+      var parts = val.split("|");
+      if (parts.length === 3) {
+        expenses.push({
+          name: parts[0],
+          amount: safeNum(parts[1], 0),
+          cycle: parts[2]
+        });
+        renderExpenseTable();
+        expensePresetSelect.value = "";
+      }
+    });
+
+    // Add Custom Expense
+    addCustomExpenseBtn.addEventListener("click", function() {
+      expenses.push({
+        name: "Custom Business Expense",
+        amount: 50,
+        cycle: "monthly"
+      });
+      renderExpenseTable();
+    });
+
+    // Clear All Expenses
+    clearExpensesBtn.addEventListener("click", function() {
+      if (confirm("Clear all business overhead expenses from the table?")) {
+        expenses = [];
+        renderExpenseTable();
+      }
+    });
+
+    // Primary Input Listeners
+    [
+      targetNetIncome,
+      taxRate,
+      monthlyHealth,
+      retirementMatch,
+      profitMargin,
+      currencySymbol,
+      daysOff,
+      hoursPerWeek,
+      utilizationPct
+    ].forEach(function(el) {
+      el.addEventListener("input", calculateRates);
+      el.addEventListener("change", calculateRates);
+    });
+
+    recalcBtn.addEventListener("click", function() {
+      calculateRates();
+      showToast("✓ Rates recalculated.");
+    });
+
+    resetDefaultsBtn.addEventListener("click", function() {
+      expenses = JSON.parse(JSON.stringify(initialExpenses));
+      targetNetIncome.value = "100000";
+      taxRate.value = "30";
+      monthlyHealth.value = "550";
+      retirementMatch.value = "4";
+      profitMargin.value = "15";
+      currencySymbol.value = "$";
+      daysOff.value = "25";
+      hoursPerWeek.value = "40";
+      utilizationPct.value = "65";
+      renderExpenseTable();
+      showToast("Reset to default parameters.");
+    });
+
+    // Copy Complete Client Rate Sheet
+    copyRateSheetBtn.addEventListener("click", function() {
+      var sym = currencySymbol ? currencySymbol.value : "$";
+      var lines = [
+        "=== FREELANCE & CONSULTANT BILLING RATE SHEET ===",
+        "",
+        "RECOMMENDED CLIENT RATES:",
+        "- True Billable Hourly Rate: " + statTrueHourly.textContent,
+        "- Full-Day Rate (8 Hours): " + statDayRate.textContent,
+        "- " + statHalfDayRate.textContent,
+        "- Weekly Retainer: " + tierWeekly.textContent + " (" + tierWeeklySub.textContent + ")",
+        "- Monthly Retainer: " + tierMonthly.textContent,
+        "- Break-Even Hourly Floor: " + statBreakEvenHourly.textContent.replace("Break-Even Floor: ", ""),
+        "",
+        "1099 VS. W-2 FINANCIAL SUMMARY:",
+        "- Target Net Take-Home / Base W-2: " + sym + Number(safeNum(targetNetIncome.value, 0)).toLocaleString("en-US") + " / yr",
+        "- Equivalent W-2 Hourly Wage (2,080 hrs): " + tierW2Hourly.textContent,
+        "- Required Gross 1099 Annual Revenue: " + tierGrossAnnual.textContent,
+        "- Estimated Annual Tax Reserve (" + taxRate.value + "%): " + rowAnnualTaxes.textContent,
+        "- Annual Health & Retirement Benefits: " + rowBenefitsCost.textContent,
+        "- Annual Business Overhead: " + rowOverheadCost.textContent,
+        "- Annual Profit & Risk Buffer (" + profitMargin.value + "%): " + rowProfitBuffer.textContent,
+        "",
+        "WORKING SCHEDULE & UTILIZATION:",
+        "- Working Schedule: " + rowWorkingSchedule.textContent,
+        "- Weekly Hours Split: " + rowWeeklySplit.textContent + " (" + utilizationPct.value + "% utilization)",
+        "- Total Annual Billable Hours: " + rowAnnualBillable.textContent,
+        "",
+        "Generated by Setay Labs — Freelance True Hourly & Day Rate Calculator"
+      ];
+
+      var textToCopy = lines.join("\n");
+
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(textToCopy).then(function() {
+          showToast("✓ Client rate sheet copied to clipboard!");
+        }).catch(function() {
+          fallbackCopyText(textToCopy);
+        });
+      } else {
+        fallbackCopyText(textToCopy);
+      }
+    });
+
+    function fallbackCopyText(text) {
+      var textArea = document.createElement("textarea");
+      textArea.value = text;
+      textArea.style.position = "fixed";
+      textArea.style.left = "-999999px";
+      textArea.style.top = "-999999px";
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      try {
+        document.execCommand("copy");
+        showToast("✓ Client rate sheet copied to clipboard!");
+      } catch (err) {
+        alert("Unable to copy automatically. Please copy from the results card manually.");
+      }
+      document.body.removeChild(textArea);
+    }
+
+    function showToast(msg) {
+      if (!copyToast) return;
+      copyToast.textContent = msg;
+      copyToast.classList.add("show");
+      setTimeout(function() {
+        copyToast.classList.remove("show");
+      }, 2500);
+    }
+
+    // Compliance Modals
+    var policyModal = document.getElementById("policyModal");
+    var modalTitle = document.getElementById("modalTitle");
+    var modalBody = document.getElementById("modalBody");
+    var closeModalBtn = document.getElementById("closeModalBtn");
+    var modalCloseActionBtn = document.getElementById("modalCloseActionBtn");
+    var openPrivacyBtn = document.getElementById("openPrivacyBtn");
+    var openTermsBtn = document.getElementById("openTermsBtn");
+    var openAdDisclosureBtn = document.getElementById("openAdDisclosureBtn");
+
+    var policies = {
+      privacy: {
+        title: "Privacy & Cookie Policy",
+        content:
+          "<h4>1. 100% Client-Side Financial Privacy</h4>" +
+          "<p>This utility executes exclusively inside your local web browser. None of your entered salary figures, tax estimates, overhead expenses, or billing rates are ever transmitted, logged, or stored on external servers.</p>" +
+          "<h4>2. Third-Party Advertising & Cookies</h4>" +
+          "<p>We may display advertisements served by third-party advertising networks, including Google AdSense. In compliance with Google AdSense policies:</p>" +
+          "<ul>" +
+            "<li>Third-party vendors, including Google, use cookies to serve ads based on a user's prior visits to this website or other websites.</li>" +
+            "<li>Google's use of advertising cookies enables it and its partners to serve ads to users based on their visit to this site and/or other sites on the Internet.</li>" +
+            "<li>Users may opt out of personalized advertising by visiting <a href=\"https://adssettings.google.com\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color:#38bdf8;\">Google Ads Settings</a> or <a href=\"https://www.aboutads.info\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color:#38bdf8;\">aboutads.info</a>.</li>" +
+          "</ul>"
+      },
+      terms: {
+        title: "Terms of Use & Tax/Financial Disclaimer",
+        content:
+          "<h4>1. Informational & Planning Use Only</h4>" +
+          "<p>The calculations and rate estimates generated by this tool are provided strictly for general informational, budgeting, and business planning purposes. They do not constitute certified public accounting (CPA), tax, legal, or financial advice.</p>" +
+          "<h4>2. Tax Jurisdiction Variability</h4>" +
+          "<p>Self-employment tax rules (such as US IRS Schedule SE, QBI Section 199A deductions, S-Corp distributions, and state/local business taxes) vary significantly by filing status and jurisdiction. Always consult a qualified CPA or tax professional when setting tax reserves and structuring your business.</p>" +
+          "<h4>3. Limitation of Liability</h4>" +
+          "<p>This utility is provided \"as is\" without warranties of any kind. Setay Labs shall not be held liable for any financial loss, tax underpayment, or business decisions made based on these estimates.</p>"
+      },
+      advertising: {
+        title: "Advertising & Monetization Disclosure",
+        content:
+          "<h4>1. Free Public Access</h4>" +
+          "<p>This calculator is provided 100% free without subscriptions, email gates, or paywalls. To support ongoing maintenance and hosting, this page includes designated programmatic advertisement placements.</p>" +
+          "<h4>2. Calculation Independence</h4>" +
+          "<p>All hourly, daily, and retainer formulas are computed using standard transparent business accounting formulas and are completely independent of any sponsors or advertisers.</p>"
+      }
+    };
+
+    function openModal(key) {
+      var data = policies[key];
+      if (!data) return;
+      modalTitle.textContent = data.title;
+      modalBody.innerHTML = data.content;
+      policyModal.classList.add("active");
+      policyModal.focus();
+    }
+
+    function closeModal() {
+      policyModal.classList.remove("active");
+    }
+
+    if (openPrivacyBtn) openPrivacyBtn.addEventListener("click", function() { openModal("privacy"); });
+    if (openTermsBtn) openTermsBtn.addEventListener("click", function() { openModal("terms"); });
+    if (openAdDisclosureBtn) openAdDisclosureBtn.addEventListener("click", function() { openModal("advertising"); });
+    if (closeModalBtn) closeModalBtn.addEventListener("click", closeModal);
+    if (modalCloseActionBtn) modalCloseActionBtn.addEventListener("click", closeModal);
+
+    policyModal.addEventListener("click", function(e) {
+      if (e.target === policyModal) closeModal();
+    });
+
+    document.addEventListener("keydown", function(e) {
+      if (e.key === "Escape" && policyModal.classList.contains("active")) {
+        closeModal();
+      }
+    });
+
+    // Initial Render
+    renderExpenseTable();
+  })();
+</script>
+
+</body>
+</html>
