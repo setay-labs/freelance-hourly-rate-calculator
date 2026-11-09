@@ -771,7 +771,189 @@
       background-color: rgba(2, 132, 199, 0.15);
       color: #7dd3fc;
     }
-  </style>
+  
+    /* === Modern Visual Polish & Micro-Interactions === */
+    .stat-value,
+    .stat-sub,
+    .proc-item strong,
+    .summary-list .val,
+    .form-group input,
+    .dock-summary strong {
+      font-variant-numeric: tabular-nums lining-nums;
+      letter-spacing: -0.02em;
+    }
+
+    /* Income Preset Pills */
+    .segmented-control {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 8px;
+      background: rgba(15, 23, 42, 0.6);
+      padding: 4px;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+      flex-wrap: wrap;
+    }
+
+    .segmented-btn {
+      flex: 1 1 auto;
+      min-height: 34px;
+      padding: 4px 10px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s ease-in-out;
+      text-align: center;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .segmented-btn:hover {
+      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .segmented-btn.active {
+      color: #ffffff;
+      background: linear-gradient(145deg, #0284c7 0%, #0369a1 100%);
+      border-color: #38bdf8;
+      box-shadow: 0 2px 8px rgba(2, 132, 199, 0.4);
+    }
+
+    /* Revenue Allocation Split Bar */
+    .revenue-split-box {
+      margin-top: 14px;
+      margin-bottom: 18px;
+      padding: 12px 14px;
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+    }
+
+    .split-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .split-legend {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.72rem;
+    }
+
+    .split-legend .dot {
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      margin-right: 4px;
+    }
+
+    .split-legend .dot.takehome { background: #38bdf8; }
+    .split-legend .dot.taxes { background: #f59e0b; }
+    .split-legend .dot.overhead { background: #a855f7; }
+
+    .split-bar {
+      display: flex;
+      width: 100%;
+      height: 8px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: rgba(30, 41, 59, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .split-segment {
+      height: 100%;
+      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .split-segment.takehome {
+      background: linear-gradient(90deg, #0284c7 0%, #38bdf8 100%);
+    }
+
+    .split-segment.taxes {
+      background: linear-gradient(90deg, #d97706 0%, #f59e0b 100%);
+    }
+
+    .split-segment.overhead {
+      background: linear-gradient(90deg, #9333ea 0%, #c084fc 100%);
+    }
+
+    /* Mobile Sticky Quick-Dock */
+    .mobile-quick-dock {
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      .mobile-quick-dock {
+        display: flex;
+        position: fixed;
+        bottom: 12px;
+        left: 12px;
+        right: 12px;
+        z-index: 99;
+        background: rgba(21, 31, 50, 0.94);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(56, 189, 248, 0.35);
+        border-radius: 12px;
+        padding: 10px 16px;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+      }
+
+      .dock-summary {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.88rem;
+        color: #f8fafc;
+      }
+
+      .dock-summary strong {
+        color: #38bdf8;
+      }
+
+      .dock-summary small {
+        color: #94a3b8;
+        font-size: 0.75rem;
+      }
+
+      .dock-sep {
+        color: #475569;
+      }
+
+      .dock-action-btn {
+        background: #0284c7;
+        color: #ffffff;
+        font-size: 0.78rem;
+        font-weight: 600;
+        padding: 6px 12px;
+        border-radius: 6px;
+        text-decoration: none;
+        transition: background 0.15s ease;
+      }
+
+      .dock-action-btn:hover {
+        background: #0369a1;
+      }
+    }
+
+</style>
 </head>
 <body>
 
@@ -807,6 +989,12 @@
               Target Annual Take-Home / Base W-2 ($)
               <span class="hint">Net Goal</span>
             </label>
+            <div class="segmented-control" role="group" aria-label="Target income quick presets" id="incomePresets">
+              <button type="button" class="segmented-btn" data-val="60000">$60k</button>
+              <button type="button" class="segmented-btn active" data-val="100000">$100k</button>
+              <button type="button" class="segmented-btn" data-val="150000">$150k</button>
+              <button type="button" class="segmented-btn" data-val="200000">$200k</button>
+            </div>
             <input type="number" id="targetNetIncome" value="100000" min="1000" max="2000000" step="1000" aria-label="Target annual take-home pay or equivalent W-2 salary in dollars">
           </div>
 
@@ -949,7 +1137,7 @@
     </div>
 
     <!-- Right Column: Output Card & Actions -->
-    <div class="results-column">
+    <div class="results-column" id="resultsColumn">
       <section class="card" aria-labelledby="results-heading" aria-live="polite">
         <div class="card-title" id="results-heading">
           <span>Recommended Client Billing Rates</span>
@@ -968,6 +1156,23 @@
             <span class="stat-label">Full-Day Rate (8h)</span>
             <div class="stat-value" id="statDayRate">$1,160 / day</div>
             <div class="stat-sub" id="statHalfDayRate">Half-Day (4h): $580</div>
+          </div>
+        </div>
+
+        <!-- Revenue Allocation Visual Bar -->
+        <div class="revenue-split-box">
+          <div class="split-header">
+            <span>Where Your Gross 1099 Billing Goes</span>
+            <div class="split-legend">
+              <span><span class="dot takehome"></span>Take-Home</span>
+              <span><span class="dot taxes"></span>Taxes</span>
+              <span><span class="dot overhead"></span>Overhead</span>
+            </div>
+          </div>
+          <div class="split-bar" aria-hidden="true">
+            <div class="split-segment takehome" id="splitBarTakeHome" style="width: 58%;" title="Net Take-Home Pay"></div>
+            <div class="split-segment taxes" id="splitBarTaxes" style="width: 26%;" title="Taxes & SE Buffer"></div>
+            <div class="split-segment overhead" id="splitBarOverhead" style="width: 16%;" title="Overhead, Insurance & Margin"></div>
           </div>
         </div>
 
@@ -1141,6 +1346,13 @@
     var overheadBadge = document.getElementById("overheadBadge");
     var multiplierBadge = document.getElementById("multiplierBadge");
 
+    var incomePresets = document.getElementById("incomePresets");
+    var splitBarTakeHome = document.getElementById("splitBarTakeHome");
+    var splitBarTaxes = document.getElementById("splitBarTaxes");
+    var splitBarOverhead = document.getElementById("splitBarOverhead");
+    var dockHourly = document.getElementById("dockHourly");
+    var dockDayRate = document.getElementById("dockDayRate");
+    var dockJumpBtn = document.getElementById("dockJumpBtn");
     var statTrueHourly = document.getElementById("statTrueHourly");
     var statBreakEvenHourly = document.getElementById("statBreakEvenHourly");
     var statDayRate = document.getElementById("statDayRate");
@@ -1403,6 +1615,20 @@
       statDayRate.textContent = formatMoney(Math.ceil(fullDayRate / 5) * 5, 0) + " / day";
       statHalfDayRate.textContent = "Half-Day (4h): " + formatMoney(Math.ceil(halfDayRate / 5) * 5, 0);
 
+      // Update Revenue Split Bar
+      if (totalTargetGross > 0 && splitBarTakeHome && splitBarTaxes && splitBarOverhead) {
+        var takeHomePct = Math.max(10, Math.min(85, (netTarget / totalTargetGross) * 100));
+        var taxesPct = Math.max(10, Math.min(60, (estimatedTaxes / totalTargetGross) * 100));
+        var overheadPct = Math.max(5, 100 - takeHomePct - taxesPct);
+        splitBarTakeHome.style.width = takeHomePct.toFixed(1) + "%";
+        splitBarTaxes.style.width = taxesPct.toFixed(1) + "%";
+        splitBarOverhead.style.width = overheadPct.toFixed(1) + "%";
+      }
+
+      // Update Mobile Quick Dock
+      if (dockHourly) dockHourly.textContent = formatMoney(Math.ceil(trueHourly), 0) + " / hr";
+      if (dockDayRate) dockDayRate.textContent = formatMoney(Math.ceil(fullDayRate / 5) * 5, 0) + " / day";
+
       tierWeekly.textContent = formatMoney(Math.round(weeklyRetainer), 0) + " / wk";
       tierWeeklySub.textContent = "Weekly Retainer (" + billableHrsPerWeek.toFixed(1) + " billable hrs)";
       tierMonthly.textContent = formatMoney(Math.round(monthlyRetainer), 0) + " / mo";
@@ -1512,6 +1738,7 @@
       expenses = JSON.parse(JSON.stringify(initialExpenses));
       targetNetIncome.value = "100000";
       taxRate.value = "30";
+      syncIncomePresets();
       monthlyHealth.value = "550";
       retirementMatch.value = "4";
       profitMargin.value = "15";
@@ -1717,6 +1944,17 @@
     renderExpenseTable();
   })();
 </script>
+
+
+  <!-- Mobile Sticky Quick-Status Dock -->
+  <aside class="mobile-quick-dock" id="mobileQuickDock" aria-label="Mobile quick summary">
+    <div class="dock-summary">
+      <span class="dock-item"><strong id="dockHourly">$145 / hr</strong> <small>1099</small></span>
+      <span class="dock-sep">&bull;</span>
+      <span class="dock-item"><strong id="dockDayRate">$1,160</strong> <small>/ day</small></span>
+    </div>
+    <a href="#resultsColumn" class="dock-action-btn" id="dockJumpBtn">Rate Sheet &darr;</a>
+  </aside>
 
 </body>
 </html>
