@@ -971,6 +971,25 @@
           </div>
         </div>
 
+        <!-- 1099 Business & Tax Protection Stack -->
+        <div class="freelance-stack-box" style="margin-bottom: 20px; padding: 14px 16px; background: rgba(2, 132, 199, 0.08); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 8px;">
+          <div style="font-weight: 600; font-size: 0.95rem; color: #38bdf8; display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+            <span>💼 1099 Business &amp; Tax Protection Stack</span>
+            <span style="font-size: 0.72rem; padding: 2px 8px; border-radius: 4px; background: rgba(56, 189, 248, 0.15); color: #7dd3fc;">Tax Defense</span>
+          </div>
+          <p style="font-size: 0.82rem; color: #cbd5e1; line-height: 1.45; margin-bottom: 10px;">
+            To keep your calculated net take-home and defend against IRS audits:
+          </p>
+          <ul style="font-size: 0.8rem; color: #cbd5e1; line-height: 1.5; padding-left: 18px; margin-bottom: 10px;">
+            <li><strong>Dedicated Business Account:</strong> Never commingle 1099 client payments with personal checking to protect corporate/LLC liability.</li>
+            <li><strong>Automate the 15.3% SE Tax:</strong> Transfer self-employment tax into a dedicated high-yield sub-account upon every client payment.</li>
+            <li><strong>Deduction Tracking:</strong> Record home office, equipment depreciation, and mileage to offset federal tax liability.</li>
+          </ul>
+          <div style="font-size: 0.72rem; color: #94a3b8; border-top: 1px dashed rgba(255,255,255,0.12); padding-top: 6px; line-height: 1.4;">
+            <span>ℹ️ <em>Affiliate Disclosure: Setay Labs may earn a referral fee from verified banking or accounting resources at zero cost to you. Recommendations are independently curated.</em></span>
+          </div>
+        </div>
+
         <!-- Retainer & Project Pricing Guide -->
         <div class="procurement-box">
           <div class="procurement-title">Retainer &amp; Equivalent W-2 Comparison</div>
@@ -1193,6 +1212,72 @@
     function clamp(val, min, max) {
       return Math.min(Math.max(val, min), max);
     }
+
+    // Layer 1: Pure Calculation Engine exposed for automated verification & unit testing
+    function computeFreelanceRates(inputs) {
+      var inp = inputs || {};
+      var netTarget = safeNum(inp.netTarget !== undefined ? inp.netTarget : 100000, 0);
+      var effTaxPct = clamp(safeNum(inp.effTaxPct !== undefined ? inp.effTaxPct : 28, 0), 0, 85);
+      var healthMo = safeNum(inp.healthMo !== undefined ? inp.healthMo : 550, 0);
+      var retirePct = clamp(safeNum(inp.retirePct !== undefined ? inp.retirePct : 4, 0), 0, 100);
+      var marginPct = clamp(safeNum(inp.marginPct !== undefined ? inp.marginPct : 15, 0), 0, 200);
+      var ptoDays = clamp(safeNum(inp.ptoDays !== undefined ? inp.ptoDays : 25, 0), 0, 255);
+      var wkHours = clamp(safeNum(inp.wkHours !== undefined ? inp.wkHours : 40, 40), 1, 112);
+      var utilPct = clamp(safeNum(inp.utilPct !== undefined ? inp.utilPct : 65, 65), 5, 100);
+      var expList = Array.isArray(inp.expenses) ? inp.expenses : initialExpenses;
+
+      var workDaysPerYear = Math.max(5, 260 - ptoDays);
+      var workWeeksPerYear = workDaysPerYear / 5;
+      var billableHrsPerWeek = wkHours * (utilPct / 100);
+      var adminHrsPerWeek = Math.max(0, wkHours - billableHrsPerWeek);
+      var annualBillableHours = Math.max(1, workWeeksPerYear * billableHrsPerWeek);
+
+      var annualOverhead = 0;
+      expList.forEach(function(item) {
+        var amt = safeNum(item && item.amount, 0);
+        annualOverhead += (item && item.cycle === "annual") ? amt : amt * 12;
+      });
+
+      var annualHealth = healthMo * 12;
+      var annualRetirement = netTarget * (retirePct / 100);
+      var totalBenefits = annualHealth + annualRetirement;
+
+      var taxDivisor = Math.max(0.15, 1 - (effTaxPct / 100));
+      var preTaxIncomeNeeded = (netTarget + annualRetirement) / taxDivisor;
+      var estimatedTaxes = Math.max(0, preTaxIncomeNeeded - (netTarget + annualRetirement));
+
+      var breakEvenGross = preTaxIncomeNeeded + annualHealth + annualOverhead;
+      var profitBufferDollars = breakEvenGross * (marginPct / 100);
+      var totalTargetGross = breakEvenGross + profitBufferDollars;
+
+      var breakEvenHourly = breakEvenGross / annualBillableHours;
+      var trueHourly = totalTargetGross / annualBillableHours;
+      var w2Hourly = netTarget / 2080;
+
+      return {
+        workWeeksPerYear: workWeeksPerYear,
+        billableHrsPerWeek: billableHrsPerWeek,
+        adminHrsPerWeek: adminHrsPerWeek,
+        annualBillableHours: annualBillableHours,
+        annualOverhead: annualOverhead,
+        totalBenefits: totalBenefits,
+        estimatedTaxes: estimatedTaxes,
+        breakEvenGross: breakEvenGross,
+        profitBufferDollars: profitBufferDollars,
+        totalTargetGross: totalTargetGross,
+        breakEvenHourly: breakEvenHourly,
+        trueHourly: trueHourly,
+        fullDayRate: trueHourly * 8,
+        halfDayRate: trueHourly * 4,
+        weeklyRetainer: totalTargetGross / workWeeksPerYear,
+        monthlyRetainer: totalTargetGross / 12,
+        w2Hourly: w2Hourly
+      };
+    }
+
+    window.calcEngine = {
+      calculate: computeFreelanceRates
+    };
 
     function formatMoney(amount, decimals) {
       var sym = currencySymbol ? currencySymbol.value : "$";
