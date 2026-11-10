@@ -1713,6 +1713,35 @@
       }
     });
 
+    // Synchronize Income Presets
+    function syncIncomePresets() {
+      if (!incomePresets) return;
+      var curVal = String(targetNetIncome.value);
+      var btns = incomePresets.querySelectorAll(".segmented-btn");
+      btns.forEach(function(b) {
+        if (b.getAttribute("data-val") === curVal) {
+          b.classList.add("active");
+        } else {
+          b.classList.remove("active");
+        }
+      });
+    }
+
+    if (incomePresets) {
+      incomePresets.addEventListener("click", function(e) {
+        var btn = e.target.closest(".segmented-btn");
+        if (!btn) return;
+        var val = btn.getAttribute("data-val");
+        if (val) {
+          targetNetIncome.value = val;
+          syncIncomePresets();
+          calculateRates();
+        }
+      });
+    }
+
+    targetNetIncome.addEventListener("input", syncIncomePresets);
+
     // Primary Input Listeners
     [
       targetNetIncome,
@@ -1941,6 +1970,7 @@
 
     // Initial Render
     loadStateFromUrl();
+    syncIncomePresets();
     renderExpenseTable();
   })();
 </script>
