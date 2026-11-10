@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://setay-labs.github.io/freelance-hourly-rate-calculator/sitemap.xml
+Sitemap: https://setaylabs.org/freelance-hourly-rate-calculator/sitemap.xml
